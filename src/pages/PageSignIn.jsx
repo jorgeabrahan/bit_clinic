@@ -27,7 +27,12 @@ export default function PageSignIn() {
       navigate('/');
       return;
     }
-    setFormError(resSignIn.error);
+    const errorMessage = resSignIn.error?.message;
+    setFormError(
+      typeof errorMessage === 'string'
+        ? errorMessage
+        : 'Ocurrio un error al iniciar sesión',
+    );
   };
 
   return (
@@ -54,6 +59,7 @@ export default function PageSignIn() {
             margin='normal'
             type='email'
             required
+            disabled={isAuthenticating}
             name={form.email.id}
             value={form.email.value}
             onChange={onChange}
@@ -64,6 +70,7 @@ export default function PageSignIn() {
             margin='normal'
             type='password'
             required
+            disabled={isAuthenticating}
             name={form.password.id}
             value={form.password.value}
             onChange={onChange}

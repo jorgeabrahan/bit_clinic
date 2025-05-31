@@ -74,6 +74,12 @@ export default function PageSignUp() {
       navigate('/');
       return;
     }
+    const errorMessage = resSignUp.error?.message;
+    setFormError(
+      typeof errorMessage === 'string'
+        ? errorMessage
+        : 'Ocurrio un error al registrarte',
+    );
     setFormError(resSignUp.error);
   };
 
