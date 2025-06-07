@@ -46,7 +46,7 @@ export default function TabSearchByPharmacy() {
     const { data, error } = await supabase
       .from('medicine_stock')
       .select(
-        'quantity, unit, branches!inner(id, name, pharmacies(commercial_name)), medicines!inner(name, description, pharmaceutical_company)',
+        'quantity, unit, branches!inner(id, name, latitude, longitude, pharmacies(commercial_name)), medicines!inner(name, description, pharmaceutical_company)',
       )
       .ilike('medicines.name', `%${medicineName}%`)
       .in('branches.id_pharmacy', [selectedPharmacy]);
