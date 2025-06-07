@@ -19,7 +19,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { ServiceAuth } from '@/Services/ServiceAuth';
 import useStoreUser from '@/stores/useStoreUser';
 
-export default function Navbar() {
+export default function NavBar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const storeSignOutUser = useStoreUser((store) => store.signOutUser);

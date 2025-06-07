@@ -1,10 +1,10 @@
-import Navbar from '@/components/global/Navbar';
+import NavBar from '@/components/global/NavBar';
 import { Toaster } from 'sonner';
 
 export default function LayoutMain({ children }) {
   return (
     <>
-      <Navbar />
+      <NavBar />
       {children}
       <Toaster richColors />
     </>
