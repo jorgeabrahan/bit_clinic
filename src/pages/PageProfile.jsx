@@ -1,11 +1,29 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 import TabProfileDetails from './PageProfile/TabProfileDetails';
+import useStoreUser from '@/stores/useStoreUser';
+import TabPharmacy from './PageProfile/TabPharmacy';
+import TabBranch from './PageProfile/TabBranch';
 
 export default function PageProfile() {
+  const user = useStoreUser((store) => store.user);
   const [tabIndex, setTabIndex] = useState(0);
+  const isPharmacyManager = useMemo(
+    () =>
+      user?.pharmacy_managers != null &&
+      user?.pharmacy_managers?.id_pharmacy &&
+      user.id === user.pharmacy_managers.id_user,
+    [user],
+  );
+  const isBranchManager = useMemo(
+    () =>
+      user?.branch_managers != null &&
+      user?.branch_managers?.id_branch &&
+      user.id === user.branch_managers.id_user,
+    [user],
+  );
 
-  const handleChange = (event, newIndex) => {
+  const handleChange = (_, newIndex) => {
     setTabIndex(newIndex);
   };
 
@@ -16,19 +34,19 @@ export default function PageProfile() {
     },
   ];
 
-  // if (user_has_assigned_pharmacy) {
-  //   tabs.push({
-  //     label: 'Farmacia asignada',
-  //     content: <Typography>Detalles de la farmacia asignada</Typography>,
-  //   });
-  // }
+  if (isPharmacyManager) {
+    tabs.push({
+      label: 'Administrar farmacia',
+      content: <TabPharmacy />,
+    });
+  }
 
-  // if (user_has_assigned_branch) {
-  //   tabs.push({
-  //     label: 'Sucursal asignada',
-  //     content: <Typography>Detalles de la sucursal asignada</Typography>,
-  //   });
-  // }
+  if (isBranchManager) {
+    tabs.push({
+      label: 'Administrar sucursal',
+      content: <TabBranch />,
+    });
+  }
 
   return (
     <Box sx={{ width: '100%' }}>

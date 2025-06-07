@@ -64,7 +64,9 @@ export class UtilFormValidation {
     const isValid = regex.test(phone);
     return {
       isValid,
-      error: isValid ? '' : 'El teléfono debe tener 8 dígitos numéricos',
+      error: isValid
+        ? ''
+        : 'El teléfono debe tener 11 dígitos numéricos, el código de país y el numero sin espacios. Ex.: 50433960188',
     };
   }
 }

@@ -7,7 +7,7 @@ import { Navigate } from 'react-router-dom';
 export default function RouteGuest({ children }) {
   const isLoggedIn = useStoreUser((store) => store.isLoggedIn);
   const user = useStoreUser((store) => store.user);
-  const signIn = useStoreUser((store) => store.signIn);
+  const storeSetUser = useStoreUser((store) => store.setUser);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -17,11 +17,11 @@ export default function RouteGuest({ children }) {
       }
       const { ok, data } = await ServiceAuth.restoreSession();
       if (ok) {
-        signIn(data);
+        storeSetUser(data);
       }
       setIsLoading(false);
     })();
-  }, [isLoggedIn, user, signIn]);
+  }, [isLoggedIn, user, storeSetUser]);
 
   if (isLoading) {
     return <PageLoading message='Verificando sesión...' />;

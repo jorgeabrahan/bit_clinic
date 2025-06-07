@@ -1,12 +1,23 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
-import useStoreUser from '@/stores/useStoreUser';
 import useForm from '@/hooks/useForm';
-import { useEffect, useState } from 'react';
+import { ServiceUserProfiles } from '@/Services/ServiceUserProfiles';
+import useStoreUser from '@/stores/useStoreUser';
 import { UtilFormValidation } from '@/utils/UtilFormValidation';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export default function TabProfileDetails() {
   const user = useStoreUser((state) => state.user);
-
+  const storeSetUser = useStoreUser((state) => state.setUser);
   const { form, display_name, birthdate, phone, onChange, setError } = useForm({
     display_name: user.display_name || '',
     birthdate: user.birthdate || '',
@@ -44,13 +55,54 @@ export default function TabProfileDetails() {
 
     if (!form.isValid()) return;
     setIsUpdatingUser(true);
-    // logica de actualizacion y validacion en caso de que haya sido exitosa
+    const resUpdate = await ServiceUserProfiles.update({
+      id: user.id,
+      display_name,
+      phone,
+      birthdate,
+    });
     setIsUpdatingUser(false);
-    setFormError('Error al actualizar los datos');
+    if (resUpdate.ok) {
+      storeSetUser(resUpdate.data);
+      toast.success('Perfil actualizado exitosamente');
+      return;
+    }
+    const errorMessage = resUpdate.error?.message;
+    setFormError(
+      typeof errorMessage === 'string'
+        ? errorMessage
+        : 'Ocurrio un error al registrarte',
+    );
+  };
+  const handleCopy = (toCopy = '', fieldName = '') => {
+    navigator.clipboard.writeText(toCopy);
+    toast.success(`${fieldName} copiado al portapapeles`);
   };
 
   return (
     <Box component='form' onSubmit={handleSubmit} sx={{ maxWidth: 500, mt: 2 }}>
+      <TextField
+        fullWidth
+        label='Id'
+        name={'Id'}
+        value={user.id}
+        margin='normal'
+        disabled
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position='end'>
+              <Tooltip title={'Copiar ID'}>
+                <IconButton
+                  onClick={() => handleCopy(user.id, 'ID')}
+                  edge='end'
+                >
+                  <ContentCopyIcon fontSize='small' />
+                </IconButton>
+              </Tooltip>
+            </InputAdornment>
+          ),
+        }}
+      />
       <TextField
         fullWidth
         label='Correo electrónico'
@@ -59,6 +111,20 @@ export default function TabProfileDetails() {
         onChange={onChange}
         margin='normal'
         disabled
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position='end'>
+              <Tooltip title={'Copiar Correo'}>
+                <IconButton
+                  onClick={() => handleCopy(user.email, 'Correo')}
+                  edge='end'
+                >
+                  <ContentCopyIcon fontSize='small' />
+                </IconButton>
+              </Tooltip>
+            </InputAdornment>
+          ),
+        }}
       />
 
       <TextField
@@ -105,6 +171,7 @@ export default function TabProfileDetails() {
       <Button
         type='submit'
         variant='contained'
+        fullWidth
         sx={{ mt: 2 }}
         disabled={!hasChanges || isUpdatingUser}
       >

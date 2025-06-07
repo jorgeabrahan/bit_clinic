@@ -10,7 +10,9 @@ export class ServiceAuth {
       }
       const resUserProfilesSelect = await supabase
         .from('user_profiles')
-        .select()
+        .select(
+          '*, pharmacy_managers(*, pharmacies(*)), branch_managers(*, branches(*))',
+        )
         .eq('id', sessionUser?.id)
         .maybeSingle();
       if (resUserProfilesSelect.error) {
@@ -20,7 +22,6 @@ export class ServiceAuth {
         ok: true,
         error: null,
         data: {
-          id_user: sessionUser?.id,
           email: sessionUser?.email,
           ...resUserProfilesSelect.data,
         },
@@ -44,7 +45,9 @@ export class ServiceAuth {
       }
       const resUserProfilesSelect = await supabase
         .from('user_profiles')
-        .select()
+        .select(
+          '*, pharmacy_managers(*, pharmacies(*)), branch_managers(*, branches(*))',
+        )
         .eq('id', resSignIn.data.user?.id)
         .maybeSingle();
 
@@ -55,7 +58,6 @@ export class ServiceAuth {
         ok: true,
         error: null,
         data: {
-          id_user: resSignIn.data.user?.id,
           email: resSignIn.data.user?.email,
           ...resUserProfilesSelect.data,
         },
@@ -91,7 +93,9 @@ export class ServiceAuth {
           phone,
           birthdate,
         })
-        .select()
+        .select(
+          '*, pharmacy_managers(*, pharmacies(*)), branch_managers(*, branches(*))',
+        )
         .maybeSingle();
 
       if (resUserProfiles.error) {

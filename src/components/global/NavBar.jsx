@@ -7,6 +7,7 @@ import {
   MenuItem,
   Box,
   Menu,
+  Link,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -14,14 +15,14 @@ import {
   Person as PersonIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { ServiceAuth } from '@/Services/ServiceAuth';
 import useStoreUser from '@/stores/useStoreUser';
 
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const signOut = useStoreUser((store) => store.signOut);
+  const storeSignOutUser = useStoreUser((store) => store.signOutUser);
   const navigate = useNavigate();
 
   const handleMenuClick = (event) => {
@@ -35,7 +36,7 @@ export default function Navbar() {
   const handleLogout = () => {
     ServiceAuth.signOut().then((res) => {
       if (!res.ok) return;
-      signOut();
+      storeSignOutUser();
       navigate('/sign-in');
     });
     handleClose();
@@ -68,17 +69,21 @@ export default function Navbar() {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
-            <MenuItem component={Link} to='/' onClick={handleClose}>
+            <MenuItem component={RouterLink} to='/' onClick={handleClose}>
               <HomeIcon sx={{ mr: 1 }} />
-              Home
+              Inicio
             </MenuItem>
-            <MenuItem component={Link} to='/profile' onClick={handleClose}>
+            <MenuItem
+              component={RouterLink}
+              to='/profile'
+              onClick={handleClose}
+            >
               <PersonIcon sx={{ mr: 1 }} />
-              Profile
+              Perfil
             </MenuItem>
             <MenuItem onClick={handleLogout}>
               <LogoutIcon sx={{ mr: 1 }} />
-              Logout
+              Cerrar sesión
             </MenuItem>
           </Menu>
         </Box>

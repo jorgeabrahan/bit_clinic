@@ -11,7 +11,7 @@ export default function PageSignIn() {
     email: '',
     password: '',
   });
-  const signIn = useStoreUser((store) => store.signIn);
+  const storeSetUser = useStoreUser((store) => store.setUser);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const navigate = useNavigate();
   const [formError, setFormError] = useState('');
@@ -23,7 +23,7 @@ export default function PageSignIn() {
     setIsAuthenticating(false);
     if (resSignIn.ok) {
       form.reset();
-      signIn(resSignIn.data);
+      storeSetUser(resSignIn.data);
       navigate('/');
       return;
     }

@@ -28,7 +28,7 @@ export default function PageSignUp() {
   });
   const [isCreatingUser, setIsCreatingUser] = useState(false);
   const [formError, setFormError] = useState('');
-  const signIn = useStoreUser((store) => store.signIn);
+  const storeSetUser = useStoreUser((store) => store.setUser);
   const handleSubmit = async (event) => {
     event.preventDefault();
     form.clearErrors();
@@ -70,7 +70,7 @@ export default function PageSignUp() {
     setIsCreatingUser(false);
     if (resSignUp.ok) {
       form.reset();
-      signIn(resSignUp.data);
+      storeSetUser(resSignUp.data);
       navigate('/');
       return;
     }
@@ -80,7 +80,6 @@ export default function PageSignUp() {
         ? errorMessage
         : 'Ocurrio un error al registrarte',
     );
-    setFormError(resSignUp.error);
   };
 
   return (
@@ -194,7 +193,13 @@ export default function PageSignUp() {
               {formError}
             </Typography>
           )}
-          <Button type='submit' variant='contained' fullWidth sx={{ mt: 3 }}>
+          <Button
+            type='submit'
+            variant='contained'
+            fullWidth
+            disabled={isCreatingUser}
+            sx={{ mt: 3 }}
+          >
             Registrarse
           </Button>
           <Typography variant='body2' align='center' sx={{ mt: 2 }}>
