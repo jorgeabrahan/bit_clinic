@@ -127,20 +127,20 @@ export default function TabSearchByBranch() {
         Buscar medicamento
       </Button>
 
-      {results.length > 0 && (
-        <Box sx={{ mt: 3, overflowX: 'auto' }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Nombre</TableCell>
-                <TableCell>Descripción</TableCell>
-                <TableCell>Unidad</TableCell>
-                <TableCell>Farmacéutica</TableCell>
-                <TableCell>Acciones</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {results.map((result, idx) => (
+      <Box sx={{ mt: 3, overflowX: 'auto' }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Descripción</TableCell>
+              <TableCell>Unidad</TableCell>
+              <TableCell>Farmacéutica</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {results.length > 0 ? (
+              results.map((result, idx) => (
                 <TableRow key={idx}>
                   <TableCell>{result.medicines.name}</TableCell>
                   <TableCell>
@@ -152,7 +152,9 @@ export default function TabSearchByBranch() {
                         overflow: 'hidden',
                         cursor: 'pointer',
                       }}
-                      onClick={() => setOpenDescription(result.medicines)}
+                      onClick={() =>
+                        setOpenDescription(result.medicines?.description)
+                      }
                     >
                       {result.medicines.description || '-'}
                     </Typography>
@@ -187,11 +189,17 @@ export default function TabSearchByBranch() {
                     **/}
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      )}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} align='center'>
+                  {isLoadingResults ? 'Cargando...' : 'No hay resultados'}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </Box>
 
       <Dialog
         open={Boolean(openDescription)}
@@ -202,7 +210,7 @@ export default function TabSearchByBranch() {
         <DialogTitle>Descripción completa</DialogTitle>
         <DialogContent>
           <Typography>
-            {openDescription?.description || 'No hay descripción disponible.'}
+            {openDescription || 'No hay descripción disponible.'}
           </Typography>
         </DialogContent>
       </Dialog>
