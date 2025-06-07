@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
-import { Box, CircularProgress } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Tabs,
+  Tab,
+  Paper,
+  Typography,
+} from '@mui/material';
 import { supabase } from '@/config/supabase';
+import TabSearchByBranch from '@/components/tabs/TabSearchByBranch';
+import TabSearchByPharmacy from '@/components/tabs/TabSearchByPharmacy';
+import TabSearchAlternatives from '@/components/tabs/TabSearchAlternatives';
 
 const containerStyle = {
   width: '100%',
@@ -36,6 +46,7 @@ export default function PageHome() {
   });
 
   const [branches, setBranches] = useState([]);
+  const [tab, setTab] = useState(0);
 
   const fetchBranches = async () => {
     const { data, error } = await supabase
@@ -78,9 +89,7 @@ export default function PageHome() {
               window.open(gmapsUrl, '_blank');
             }}
             label={{
-              text: `${branch.name} (${
-                branch.pharmacies?.commercial_name || 'N/A'
-              })`,
+              text: branch.pharmacies?.commercial_name ?? branch.name,
               className: 'map-marker-label',
             }}
           />
@@ -97,6 +106,26 @@ export default function PageHome() {
           white-space: nowrap;
         }
       `}</style>
+
+      <Paper sx={{ mt: 3 }}>
+        <Tabs
+          value={tab}
+          onChange={(e, newValue) => setTab(newValue)}
+          indicatorColor='primary'
+          textColor='primary'
+          variant='scrollable'
+          scrollButtons='auto'
+        >
+          <Tab label='Buscar por sucursal' />
+          <Tab label='Buscar por farmacia' />
+          <Tab label='Buscar alternativas' />
+        </Tabs>
+        <Box p={2}>
+          {tab === 0 && <TabSearchByBranch />}
+          {tab === 1 && <TabSearchByPharmacy />}
+          {tab === 2 && <TabSearchAlternatives />}
+        </Box>
+      </Paper>
     </Box>
   );
 }

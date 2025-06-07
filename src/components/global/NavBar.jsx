@@ -46,7 +46,15 @@ export default function NavBar() {
     <AppBar position='static' color='primary'>
       <Toolbar>
         <Typography variant='h6' sx={{ flexGrow: 1 }}>
-          BitClinic
+          <Link
+            component={RouterLink}
+            to='/'
+            underline='none'
+            color='inherit'
+            sx={{ fontWeight: 'bold' }}
+          >
+            BitClinic
+          </Link>
         </Typography>
 
         <Box>

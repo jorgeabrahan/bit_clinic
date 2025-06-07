@@ -172,6 +172,23 @@ export class ServiceBranches {
 
   static async addMedicineToStock({ id_branch, id_medicine, quantity, unit }) {
     try {
+      const { data: existing, error: checkError } = await supabase
+        .from('medicine_stock')
+        .select('id')
+        .eq('id_branch', id_branch)
+        .eq('id_medicine', id_medicine)
+        .maybeSingle();
+
+      if (checkError) throw checkError;
+      console.log(existing);
+      if (existing) {
+        return {
+          ok: false,
+          data: null,
+          error: 'Este medicamento ya está asignado a esta sucursal.',
+        };
+      }
+
       const { data, error } = await supabase
         .from('medicine_stock')
         .insert({

@@ -66,7 +66,11 @@ export default function FormAddMedicineToBranch({ onAdded = () => {} }) {
       form.reset();
       return;
     }
-    setFormError(res.error?.message || 'Error al asignar el medicamento');
+    setFormError(
+      typeof res.error === 'string'
+        ? res.error
+        : res.error?.message ?? 'Error al asignar el medicamento',
+    );
   };
 
   return (
