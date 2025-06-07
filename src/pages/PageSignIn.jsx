@@ -85,7 +85,13 @@ export default function PageSignIn() {
               {formError}
             </Typography>
           )}
-          <Button type='submit' variant='contained' fullWidth sx={{ mt: 3 }}>
+          <Button
+            type='submit'
+            variant='contained'
+            disabled={isAuthenticating}
+            fullWidth
+            sx={{ mt: 3 }}
+          >
             Ingresar
           </Button>
           <Typography variant='body2' align='center' sx={{ mt: 2 }}>

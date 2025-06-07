@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  GoogleMap,
-  Marker,
-  InfoWindow,
-  useJsApiLoader,
-} from '@react-google-maps/api';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { Box, CircularProgress } from '@mui/material';
 import { supabase } from '@/config/supabase';
 
@@ -41,7 +36,6 @@ export default function PageHome() {
   });
 
   const [branches, setBranches] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState(null);
 
   const fetchBranches = async () => {
     const { data, error } = await supabase
@@ -79,9 +73,14 @@ export default function PageHome() {
           <Marker
             key={branch.id}
             position={{ lat: branch.latitude, lng: branch.longitude }}
-            onClick={() => setSelectedBranch(branch)}
+            onClick={() => {
+              const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${branch.latitude},${branch.longitude}`;
+              window.open(gmapsUrl, '_blank');
+            }}
             label={{
-              text: branch.pharmacies?.commercial_name ?? branch.name,
+              text: `${branch.name} (${
+                branch.pharmacies?.commercial_name || 'N/A'
+              })`,
               className: 'map-marker-label',
             }}
           />
