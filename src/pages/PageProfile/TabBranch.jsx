@@ -17,6 +17,7 @@ import {
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import DialogMedicines from '@/components/dialogs/DialogMedicines';
 
 export default function TabBranch() {
   const user = useStoreUser((state) => state.user);
@@ -27,6 +28,7 @@ export default function TabBranch() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [formError, setFormError] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
+  const [openMedicinesDialog, setOpenMedicinesDialog] = useState(null);
   const {
     form,
     name,
@@ -128,7 +130,7 @@ export default function TabBranch() {
         <Button
           variant='contained'
           startIcon={<SettingsIcon />}
-          // onClick={() => setOpenBranch(true)}
+          onClick={() => setOpenMedicinesDialog(branch)}
         >
           Administrar medicamentos
         </Button>
@@ -294,6 +296,11 @@ export default function TabBranch() {
           Guardar cambios
         </Button>
       </Box>
+      <DialogMedicines
+        metadata={{ branch: openMedicinesDialog }}
+        isOpen={openMedicinesDialog != null}
+        onClose={() => setOpenMedicinesDialog(null)}
+      />
     </>
   );
 }

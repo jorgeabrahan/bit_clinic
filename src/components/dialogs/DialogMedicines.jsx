@@ -1,4 +1,7 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { Dialog, DialogContent, Tab, Tabs } from '@mui/material';
+import { useState } from 'react';
+import TableBranchMedicines from '../tables/TableBranchMedicines';
+import FormAddMedicineToBranch from '../forms/FormAddMedicineToBranch';
 
 export default function DialogMedicines({
   isOpen = false,
@@ -21,6 +24,11 @@ export default function DialogMedicines({
     },
   },
 }) {
+  const [tabIndex, setTabIndex] = useState(0);
+
+  const handleChange = (_, newIndex) => {
+    setTabIndex(newIndex);
+  };
   return (
     <Dialog
       open={isOpen}
@@ -33,11 +41,26 @@ export default function DialogMedicines({
       }}
       fullWidth
     >
-      <DialogTitle fontWeight={600}>
-        Asignar usuario a {metadata.branch?.name}
-      </DialogTitle>
+      <Tabs
+        value={tabIndex}
+        onChange={handleChange}
+        variant='fullWidth'
+        indicatorColor='primary'
+        textColor='primary'
+        sx={{ pt: 1 }}
+      >
+        <Tab
+          fontSize='small'
+          sx={{ mb: 1.5 }}
+          label='Medicamentos registrados'
+        />
+        <Tab fontSize='small' sx={{ mb: 1.5 }} label='Agregar medicamento' />
+      </Tabs>
 
-      <DialogContent sx={{ p: 3 }}></DialogContent>
+      <DialogContent sx={{ p: 0 }}>
+        {tabIndex === 0 && <TableBranchMedicines />}
+        {tabIndex === 1 && <FormAddMedicineToBranch />}
+      </DialogContent>
     </Dialog>
   );
 }

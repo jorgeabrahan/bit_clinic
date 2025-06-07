@@ -19,7 +19,7 @@ import { ServiceBranches } from '@/Services/ServiceBranches';
 import DialogAssignUserToBranch from '../dialogs/DialogAssignUserToBranch';
 import DialogViewBranchAssignedUsers from '../dialogs/DialogViewBranchAssignedUsers';
 
-export default function TableBranch() {
+export default function TablePharmacyBranches() {
   const [branches, setBranches] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);

@@ -169,4 +169,33 @@ export class ServiceBranches {
       };
     }
   }
+
+  static async addMedicineToStock({ id_branch, id_medicine, quantity, unit }) {
+    try {
+      const { data, error } = await supabase
+        .from('medicine_stock')
+        .insert({
+          id_branch,
+          id_medicine,
+          quantity,
+          unit,
+        })
+        .select()
+        .maybeSingle();
+
+      if (error) throw error;
+
+      return {
+        ok: true,
+        data,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        data: null,
+        error: error?.message || 'Error al agregar el medicamento al stock.',
+      };
+    }
+  }
 }

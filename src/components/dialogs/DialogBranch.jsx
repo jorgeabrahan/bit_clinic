@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import FormCreateBranch from '../forms/FormCreateBranch';
-import TableBranch from '../tables/TableBranch';
+import TablePharmacyBranches from '../tables/TablePharmacyBranches';
 
 export default function DialogBranch({ isOpen = false, onClose = () => {} }) {
   const [tabIndex, setTabIndex] = useState(0);
@@ -42,7 +42,7 @@ export default function DialogBranch({ isOpen = false, onClose = () => {} }) {
       </Tabs>
 
       <DialogContent sx={{ p: 0 }}>
-        {tabIndex === 0 && <TableBranch />}
+        {tabIndex === 0 && <TablePharmacyBranches />}
         {tabIndex === 1 && (
           <FormCreateBranch onCreated={() => setTabIndex(0)} />
         )}
