@@ -1,5 +1,12 @@
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useEffect, useState } from 'react';
+import {
+  GoogleMap,
+  Marker,
+  InfoWindow,
+  useJsApiLoader,
+} from '@react-google-maps/api';
 import { Box, CircularProgress } from '@mui/material';
+import { supabase } from '@/config/supabase';
 
 const containerStyle = {
   width: '100%',
@@ -7,14 +14,45 @@ const containerStyle = {
 };
 
 const center = {
-  lat: 14.072275,
-  lng: -87.192136,
+  lat: 15.501504,
+  lng: -88.016532,
+};
+
+const mapOptions = {
+  mapTypeControl: false,
+  streetViewControl: false,
+  fullscreenControl: false,
+  styles: [
+    {
+      featureType: 'poi.business',
+      stylers: [{ visibility: 'off' }],
+    },
+    {
+      featureType: 'transit',
+      elementType: 'labels.icon',
+      stylers: [{ visibility: 'off' }],
+    },
+  ],
 };
 
 export default function PageHome() {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY, // asegúrate de definirlo en tu .env
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
   });
+
+  const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
+
+  const fetchBranches = async () => {
+    const { data, error } = await supabase
+      .from('branches')
+      .select('*, pharmacies(commercial_name)');
+    if (!error) setBranches(data);
+  };
+
+  useEffect(() => {
+    if (isLoaded) fetchBranches();
+  }, [isLoaded]);
 
   if (!isLoaded) {
     return (
@@ -31,9 +69,35 @@ export default function PageHome() {
 
   return (
     <Box sx={{ p: 2 }}>
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
-        {/* Aquí luego puedes renderizar marcadores con las farmacias */}
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={13}
+        options={mapOptions}
+      >
+        {branches.map((branch) => (
+          <Marker
+            key={branch.id}
+            position={{ lat: branch.latitude, lng: branch.longitude }}
+            onClick={() => setSelectedBranch(branch)}
+            label={{
+              text: branch.pharmacies?.commercial_name ?? branch.name,
+              className: 'map-marker-label',
+            }}
+          />
+        ))}
       </GoogleMap>
+
+      <style>{`
+        .map-marker-label {
+          background-color: white;
+          padding: 2px 4px;
+          border-radius: 4px;
+          font-size: 12px;
+          font-weight: bold;
+          white-space: nowrap;
+        }
+      `}</style>
     </Box>
   );
 }
